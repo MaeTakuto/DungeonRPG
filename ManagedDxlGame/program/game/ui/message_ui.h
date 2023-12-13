@@ -16,7 +16,7 @@ public:
 	inline TwoChoiseUI* getTwoChoiseUI() { return two_choise_ui_; }
 
 	// メッセージが終わっているかどうか
-	inline bool getMessEndFlg() { return mess_end_flg_; }
+	inline bool isMessageEnd() { return is_message_end_; }
 
 	// メッセージをセット
 	inline void setMessage(std::string& mess) {
@@ -41,9 +41,9 @@ private:
 
 	float timer_ = 0.0f;							// 文字のアニメーション用タイマー
 
-	bool anim_flg_ = false;							// 文字アニメーションにするかの判定
-	bool sel_ui_flg_ = false;						// 二択コマンドを表示するかの判定
-	bool mess_end_flg_ = false;						// 文字アニメーションが終了してるかの判定
+	bool is_animation_ = false;						// 文字アニメーションにするかの判定
+	bool is_select_ui_draw_ = false;				// 二択コマンドを表示するかの判定
+	bool is_message_end_ = false;					// 文字アニメーションが終了してるかの判定
 
 	tnl::Vector3 two_choise_ui_pos_;				// 二択コマンドUI
 	tnl::Vector3 mess_pos_;							// メッセージを表示するポジション

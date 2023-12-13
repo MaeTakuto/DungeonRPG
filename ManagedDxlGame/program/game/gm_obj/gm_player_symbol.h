@@ -47,5 +47,6 @@ private:
 	bool seqCheckWall(const float delta_time);										// 当たり判定の確認
 	bool seqAttack(const float delta_time);											// 攻撃
 	bool seqMove(const float delta_time);											// 移動状態
+	bool seqStandby(const float delta_time);										// 待機行動状態
 
 };

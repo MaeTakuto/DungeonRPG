@@ -137,7 +137,11 @@ void ScenePlay::draw() {
 		for (int x = 0; x < mapchip_data_[y].size(); ++x) {
 			tnl::Vector3 draw_pos = tnl::Vector3(x * GameManager::GPC_DRAW_CHIP_SIZE, y * GameManager::GPC_DRAW_CHIP_SIZE, 0)
 				- camera_->getPos() + tnl::Vector3(DXE_WINDOW_WIDTH >> 1, DXE_WINDOW_HEIGHT >> 1, 0);
-			DrawExtendGraph(draw_pos.x, draw_pos.y, draw_pos.x + GameManager::GPC_DRAW_CHIP_SIZE, draw_pos.y + GameManager::GPC_DRAW_CHIP_SIZE, gpc_map_chip_hdls_[mapchip_data_[y][x]], true);
+			
+			// 描画
+			DrawExtendGraph(draw_pos.x, draw_pos.y, 
+				draw_pos.x + GameManager::GPC_DRAW_CHIP_SIZE, draw_pos.y + GameManager::GPC_DRAW_CHIP_SIZE
+				, gpc_map_chip_hdls_[mapchip_data_[y][x]], true);
 		}
 	}
 
@@ -189,6 +193,7 @@ bool ScenePlay::seqPlayerAct(const float delta_time) {
 		return true;
 	}
 
+	// 行動開始時
 	if (player_symbol_->getActState() == eActState::ACT) {
 
 		// 当たり判定
@@ -207,6 +212,24 @@ bool ScenePlay::seqPlayerAct(const float delta_time) {
 
 		}
 	}
+
+	// 攻撃行動開始時
+	if (player_symbol_->getActState() == eActState::ATTACK) {
+		sequence_.change(&ScenePlay::seqPlayerAttack);
+	}
+
+	return true;
+}
+
+// プレイヤー攻撃シーケンス
+bool ScenePlay::seqPlayerAttack(const float delta_time) {
+
+	charaUpdate(delta_time);
+
+	// 攻撃中なら、処理はここまで
+	if (player_symbol_->getActState() == eActState::ATTACK) return true;
+	
+	sequence_.change(&ScenePlay::seqEnemyAct);
 
 	return true;
 }
@@ -243,10 +266,10 @@ bool ScenePlay::seqCheckActEnd(const float delta_time) {
 	charaUpdate(delta_time);
 
 	if (!player_symbol_) return false;
-	if (player_symbol_->getActState() == eActState::ACT) return true;
+	if (player_symbol_->getActState() != eActState::END) return true;
 
 	for (auto enemy_symbol : enemy_symbols_) {
-		if (enemy_symbol->getActState() == eActState::ACT) return true;
+		if (enemy_symbol->getActState() != eActState::END) return true;
 	}
 
 	if (getMapChipData(player_symbol_->getPos()) == static_cast<int>(eMapData::GOAL)) {
@@ -279,7 +302,7 @@ bool ScenePlay::seqMenuSelect(const float delta_time) {
 	return true;
 }
 
-// 
+// タイトルシーンに変える
 bool ScenePlay::seqChangeTitleScene(const float delta_time) {
 
 	if (is_scene_change_) return true;
@@ -290,7 +313,7 @@ bool ScenePlay::seqChangeTitleScene(const float delta_time) {
 
 }
 
-// 
+// リザルトシーンに変える
 bool ScenePlay::seqChangeResultScene(const float delta_time) {
 
 	if (CheckSoundMem(clear_trans_se_) == false) {

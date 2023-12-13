@@ -23,7 +23,7 @@ MessageUI::MessageUI(tnl::Vector3 pos, std::string& mess_str, bool anim_flg, boo
 	// 二択コマンドを表示
 	if (sel_ui_flg) two_choise_ui_ = new TwoChoiseUI(two_choise_ui_pos_);
 
-	anim_flg_ = anim_flg;
+	is_animation_ = anim_flg;
 }
 
 // デストラクタ
@@ -53,7 +53,7 @@ void MessageUI::draw() {
 // 表示タイプ選択
 bool MessageUI::seqSelDrawType(const float delta_time) {
 
-	if (anim_flg_) sequence_.change(&MessageUI::seqAnimMess);
+	if (is_animation_) sequence_.change(&MessageUI::seqAnimMess);
 	else sequence_.change(&MessageUI::seqDefault);
 
 	return true;
@@ -81,7 +81,7 @@ bool MessageUI::seqAnimMess(const float delta_time) {
 		}
 		else {
 			sequence_.change(&MessageUI::seqRun);
-			mess_end_flg_ = true;
+			is_message_end_ = true;
 		}
 		timer_ = 0.0f;
 	}

@@ -35,6 +35,7 @@ private:
 	Camera* camera_ = nullptr;									// カメラ
 	MenuUICommander* menu_ui_ = nullptr;						// メニューUI
 	MessageEvent* mess_event_ = nullptr;						// イベント
+	MessageUI* message_ui_ = nullptr;							// メッセージUI
 
 	tnl::Sequence<ScenePlay> sequence_ 
 		= tnl::Sequence<ScenePlay>(this, &ScenePlay::seqStartEvent);	// プレイシーンのシーケンス
@@ -66,11 +67,12 @@ private:
 
 	bool seqStartEvent(const float delta_time);					// スタートイベントを再生するシーケンス
 	bool seqPlayerAct(const float delta_time);					// プレイヤー行動シーケンス
+	bool seqPlayerAttack(const float delta_time);				// プレイヤー攻撃シーケンス
 	bool seqEnemyAct(const float delta_time);					// 敵の行動シーケンス
 	bool seqCheckActEnd(const float delta_time);				// プレイヤー、敵の行動終了を確認するシーケンス
 	bool seqMenuSelect(const float delta_time);					// メニュー画面選択シーケンス
 	bool seqChangeResultScene(const float delta_time);			// リザルトシーンに切り替え
-	bool seqChangeTitleScene(const float delta_time);			// 
+	bool seqChangeTitleScene(const float delta_time);			// タイトルシーンに切り替え
 	bool seqEndEvent(const float delta_time);					// 終了イベント再生シーケンス
 
 	void charaUpdate(float delta_time);							// キャラクターアップデート
@@ -127,22 +129,23 @@ public:
 
 		tnl::DebugTrace("敵は%dダメージ受けた\n", target->applyDamage(damage));
 
-		if (target->isAlive() == false)
+		if (target->isAlive() == false) {
 			for (auto it = enemy_symbols_.begin(); it != enemy_symbols_.end();) {
 				if ((*it) == target) {
 					tnl::DebugTrace("敵を倒した。\n");
-					setMapData( (*it)->getPos(), getMapChipData( (*it)->getPos() ) );
+					setMapData((*it)->getPos(), getMapChipData((*it)->getPos()));
 					delete* it;
 					it = enemy_symbols_.erase(it);
 					break;
 				}
 				it++;
 			}
+		}
 	}
 
 	inline void applyDamage(PlayerSymbol* target, int damage) {
 
-		tnl::DebugTrace("敵は%dダメージ受けた\n", target->applyDamage(damage));
+		tnl::DebugTrace("プレイヤーは%dダメージ受けた\n", target->applyDamage(damage));
 
 		if (target->isAlive() == false) {
 

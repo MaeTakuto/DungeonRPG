@@ -38,6 +38,7 @@ void GameManager::update(float delta_time) {
 
 // シーンの切り替えをセット
 void GameManager::changeScene( SceneBase* next_scene, eFadeColor fade_color, float fade_time ) {
+	if (is_transition_) return;
 	next_scene_ = next_scene;
 	fade_color_ = fade_color;
 	fade_time_ = fade_time;

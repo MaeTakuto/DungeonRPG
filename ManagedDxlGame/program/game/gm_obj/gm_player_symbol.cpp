@@ -134,12 +134,14 @@ bool PlayerSymbol::seqIdle(const float delta_time) {
 
 	// 攻撃（スペースボタン）
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_SPACE)) {
+		act_state_ = eActState::ATTACK;
 		sequence_.change(&PlayerSymbol::seqAttack);
 		anim_frame_ = ANIM_IDLE;
 	}
 
 	// 待機（zキー、□ボタン）
 	if (tnl::Input::IsKeyDown(eKeys::KB_Z) || tnl::Input::IsPadDown(ePad::KEY_2)) {
+		sequence_.change(&PlayerSymbol::seqCheckWall);
 		act_state_ = eActState::ACT;
 		return true;
 	}
@@ -180,11 +182,14 @@ bool PlayerSymbol::seqAttack(const float delta_time) {
 	// 敵がいなければ
 	if (!target)
 	{
+		act_state_ = eActState::END;
 		sequence_.change(&PlayerSymbol::seqIdle);
 		return true;
 	}
 	// 攻撃
 	scene_play->applyDamage(target, parameter_.atk_);
+
+	act_state_ = eActState::END;
 	sequence_.change(&PlayerSymbol::seqIdle);
 
 	return true;
@@ -213,5 +218,14 @@ bool PlayerSymbol::seqMove(const float delta_time) {
 		sequence_.change(&PlayerSymbol::seqIdle);
 	}
 	
+	return true;
+}
+
+// 待機行動状態
+bool PlayerSymbol::seqStandby(const float delta_time) {
+	
+	act_state_ = eActState::END;
+	sequence_.change(&PlayerSymbol::seqIdle);
+
 	return true;
 }

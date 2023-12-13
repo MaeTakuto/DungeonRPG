@@ -21,6 +21,7 @@ enum class eDir {
 enum class eActState {
 	IDLE,
 	ACT,
+	ATTACK,
 	END
 };
 
